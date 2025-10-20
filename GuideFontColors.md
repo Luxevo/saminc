@@ -44,7 +44,7 @@
 | **H4**     | 18px  | Bold (700)     | -           | `<h4>`                   |
 | Paragraph  | 18px  | Regular (400)  | -           | `<p>`                    |
 | Menu       | 16px  | Regular (400)  | -           | `.text-menu`             |
-| Button     | 14px  | Regular (400)  | -           | `.text-button`           |
+| Button     | 14px  | Bold (700)     | -           | `.text-button`           |
 | Span       | 12px  | Regular (400)  | -           | `<span>`                 |
 
 ### Heading Hierarchy
@@ -93,10 +93,11 @@
 - **Class**: `className="text-menu"`
 
 #### Button
-- **Font**: Montserrat
+- **Font**: Montserrat Bold
 - **Size**: 14px
 - **Usage**: Button labels
 - **Class**: `className="text-button"`
+- **Weight**: 700 (Bold)
 
 #### Span
 - **Font**: Montserrat
