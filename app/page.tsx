@@ -87,7 +87,7 @@ export default function Home() {
                   <h2 className="text-dark">Nos valeurs</h2>
                   <h3 className="text-dark">La transparence, la bienveillance et la compétence.</h3>
                   <p className="text-dark">
-                    Notre modèle est fondé sur la transparence, notre système permet à nos clients d'avoir une vision claire, nos conseils et recommandations sont basés et adaptés selon les besoins et nous dirigeons les transactions, avec compétence.
+                    Notre modèle est fondé sur la transparence, notre système permet à nos clients d&apos;avoir une vision claire, nos conseils et recommandations sont basés et adaptés selon les besoins et nous dirigeons les transactions, avec compétence.
                   </p>
                 </div>
               </div>
@@ -98,11 +98,11 @@ export default function Home() {
                   <Image src="/img/icon nos valeurs_2.svg" alt="Valeurs de motivation" width={64} height={64} />
                   <h2 className="text-dark">Quelques-uns de nos valeurs de motivation</h2>
                   <div className="flex flex-wrap gap-2">
-                    <span className="bg-white text-dark px-3 py-1 rounded-full text-sm">L'innovation</span>
+                    <span className="bg-white text-dark px-3 py-1 rounded-full text-sm">L&apos;innovation</span>
                     <span className="bg-white text-dark px-3 py-1 rounded-full text-sm">La créativité</span>
-                    <span className="bg-white text-dark px-3 py-1 rounded-full text-sm">L'authenticité</span>
+                    <span className="bg-white text-dark px-3 py-1 rounded-full text-sm">L&apos;authenticité</span>
                     <span className="bg-white text-dark px-3 py-1 rounded-full text-sm">Persévérance</span>
-                    <span className="bg-white text-dark px-3 py-1 rounded-full text-sm">L'éthique</span>
+                    <span className="bg-white text-dark px-3 py-1 rounded-full text-sm">L&apos;éthique</span>
                   </div>
                 </div>
               </div>
@@ -129,10 +129,10 @@ export default function Home() {
             {/* Right Column - Content */}
             <div className="flex justify-center">
               <div className="space-y-4 flex flex-col items-start text-left">
-                <h2 className="text-dark">Besoin d'<span className="text-teal font-bold text-[32px]">une ressource ?</span></h2>
+                <h2 className="text-dark">Besoin d&apos;<span className="text-teal font-bold text-[32px]">une ressource ?</span></h2>
                 
                 <p className="text-dark">
-                  L'envie de contribuer et aidez les gens.
+                  L&apos;envie de contribuer et aidez les gens.
                 </p>
                 
                 <div className="flex flex-col">
