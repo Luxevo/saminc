@@ -1,6 +1,31 @@
+"use client";
+
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  
+  const wordData = [
+    { word: "inspecteur", article: "un" },
+    { word: "professionnel", article: "un" },
+    { word: "conseil", article: "un" },
+    { word: "financement", article: "un" }
+  ];
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsAnimating(true);
+      
+      setTimeout(() => {
+        setCurrentWordIndex((prevIndex) => (prevIndex + 1) % wordData.length);
+        setIsAnimating(false);
+      }, 300);
+    }, 4000);
+    
+    return () => clearInterval(interval);
+  }, [wordData.length]);
   return (
     <main className="min-h-screen bg-white">
       <section className="py-12 px-4 md:px-6">
@@ -113,7 +138,7 @@ export default function Home() {
 
       {/* Section Besoin d'une ressource */}
       <section className="py-16 px-4 md:px-6">
-        <div className="max-w-[1400px] mx-auto">
+        <div className="max-w-[1600px] mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - Image */}
             <div className="relative rounded-lg overflow-hidden shadow-sm">
@@ -128,8 +153,12 @@ export default function Home() {
 
             {/* Right Column - Content */}
             <div className="flex justify-center">
-              <div className="space-y-4 flex flex-col items-start text-left">
-                <h2 className="text-dark">Besoin d&apos;<span className="text-teal font-bold text-[32px]">une ressource ?</span></h2>
+              <div className="space-y-4 flex flex-col items-start text-left w-full max-w-2xl">
+                <h2 className="text-dark">Besoin d&apos;<span className={`text-teal font-bold text-[32px] inline-block transition-all duration-700 ease-out ${
+                  isAnimating 
+                    ? 'transform translate-y-8 opacity-0' 
+                    : 'transform translate-y-0 opacity-100'
+                }`}>{wordData[currentWordIndex]?.article || 'un'} {wordData[currentWordIndex]?.word || 'inspecteur'} ?</span></h2>
                 
                 <p className="text-dark">
                   L&apos;envie de contribuer et aidez les gens.
