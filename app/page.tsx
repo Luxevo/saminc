@@ -8,6 +8,7 @@ export default function Home() {
   const [isAnimating, setIsAnimating] = useState(false);
   
   const wordData = [
+    { word: "ressource", article: "une" },
     { word: "inspecteur", article: "un" },
     { word: "professionnel", article: "un" },
     { word: "conseil", article: "un" },
