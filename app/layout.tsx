@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import localFont from "next/font/local";
+import TranslatedHeader from "./components/TranslatedHeader";
+import { LanguageProvider } from "./contexts/LanguageContext";
 import "./globals.css";
 
 const montserrat = localFont({
@@ -48,58 +50,11 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${montserrat.variable} font-[family-name:var(--font-montserrat)] antialiased`}>
-        <header className="w-full border-b border-light/60">
-          <div className="max-w-[1400px] mx-auto py-3 flex items-center gap-6">
-              <Link href="/" className="shrink-0" aria-label="Accueil">
-                <Image src="/img/Logo header.svg" alt="saminc.com" width={175} height={60} priority />
-              </Link>
-
-            <nav className="flex items-center gap-4 text-dark">
-              <details className="relative group">
-                <summary className="list-none cursor-pointer flex items-center gap-1 px-3 py-2 rounded hover:bg-light/60 text-menu font-normal">
-                  Solutions
-                  <span aria-hidden>▾</span>
-                </summary>
-                <div className="absolute mt-2 left-0 w-56 rounded border border-light bg-white shadow-sm p-4 text-sm hidden group-open:block">
-                  À venir
-                </div>
-              </details>
-
-              <details className="relative group">
-                <summary className="list-none cursor-pointer flex items-center gap-1 px-3 py-2 rounded hover:bg-light/60 text-menu font-normal">
-                  À propos
-                  <span aria-hidden>▾</span>
-                </summary>
-                <div className="absolute mt-2 left-0 w-56 rounded border border-light bg-white shadow-sm p-4 text-sm hidden group-open:block">
-                  À venir
-                </div>
-              </details>
-            </nav>
-
-            <div className="ml-auto flex items-center gap-4">
-              <details className="relative group">
-                <summary className="list-none cursor-pointer flex items-center gap-2 px-3 py-2 rounded hover:bg-light/60 text-dark text-menu font-normal">
-                  <Image src="/icons/globe.svg" alt="Langue" width={16} height={16} />
-                  Fr
-                  <span aria-hidden>▾</span>
-                </summary>
-                <div className="absolute mt-2 right-0 w-32 rounded border border-light bg-white shadow-sm p-2 text-sm hidden group-open:block z-[1000]">
-                  <button className="block w-full text-left px-3 py-2 rounded hover:bg-light/60">Fr</button>
-                  <button className="block w-full text-left px-3 py-2 rounded hover:bg-light/60">En</button>
-                </div>
-              </details>
-
-              <Link href="#" className="text-dark text-menu font-normal hover:underline">Nous contacter</Link>
-
-              <Link href="#" className="bg-teal text-black text-button font-medium px-4 py-2 rounded hover:opacity-90 transition-opacity inline-flex items-center gap-2">
-                <Image src="/icons/user.png" alt="Utilisateur" width={16} height={16} />
-                Se connecter
-              </Link>
-            </div>
-          </div>
-        </header>
+        <LanguageProvider>
+          <TranslatedHeader />
 
         {children}
+        </LanguageProvider>
       </body>
     </html>
   );

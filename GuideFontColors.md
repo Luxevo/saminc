@@ -47,6 +47,19 @@
 | Button     | 14px  | Bold (700)     | -           | `.text-button`           |
 | Span       | 12px  | Regular (400)  | -           | `<span>`                 |
 
+### Mobile Typography
+
+| Element    | Mobile Size | Desktop Size | Weight         | HTML/Class               |
+|------------|-------------|--------------|----------------|--------------------------|
+| **H1**     | 32px        | 48px         | Bold (700)     | `<h1>`                   |
+| **H2**     | 24px        | 32px         | Regular (400) | `<h2>`                   |
+| **H3**     | 18px        | 24px         | Regular (400) | `<h3>`                   |
+| **H4**     | 18px        | 18px         | Bold (700)     | `<h4>`                   |
+| Paragraph  | 14px        | 18px         | Regular (400) | `<p>`                    |
+| Button     | 12px        | 14px         | Bold (700)     | `.text-button`           |
+| Footer H3  | 18px        | 18px         | Bold (600)     | `<h3>` (footer)          |
+| Footer Links| 16px       | 16px         | Regular (400) | `<a>` (footer)           |
+
 ### Heading Hierarchy
 
 #### Heading 1
