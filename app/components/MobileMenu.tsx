@@ -5,11 +5,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import MobileLanguageSelector from './MobileLanguageSelector';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useModal } from '../contexts/ModalContext';
 import { translations } from '../lib/translations';
 
 export default function MobileMenu() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { language } = useLanguage();
+  const { openModal } = useModal();
   const t = translations[language];
 
   useEffect(() => {
@@ -47,20 +49,15 @@ export default function MobileMenu() {
             <MobileLanguageSelector />
           </div>
           <div className="border-t border-light pt-4">
-            <Link 
-              href="#" 
-              className="block w-full text-left px-3 py-2 rounded hover:bg-light/60 mb-2"
-              onClick={() => setMenuOpen(false)}
+            <button 
+              onClick={() => {
+                openModal();
+                setMenuOpen(false);
+              }}
+              className="block w-full text-left px-3 py-2 rounded hover:bg-light/60 cursor-pointer"
             >
-              {t.solutions}
-            </Link>
-            <Link 
-              href="#" 
-              className="block w-full text-left px-3 py-2 rounded hover:bg-light/60"
-              onClick={() => setMenuOpen(false)}
-            >
-              {t.about}
-            </Link>
+              {t.contactUs}
+            </button>
           </div>
         </div>
       )}

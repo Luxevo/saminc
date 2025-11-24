@@ -4,6 +4,7 @@ import Link from "next/link";
 import localFont from "next/font/local";
 import TranslatedHeader from "./components/TranslatedHeader";
 import { LanguageProvider } from "./contexts/LanguageContext";
+import { ModalProvider } from "./contexts/ModalContext";
 import "./globals.css";
 
 const montserrat = localFont({
@@ -51,9 +52,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${montserrat.variable} font-[family-name:var(--font-montserrat)] antialiased`}>
         <LanguageProvider>
-          <TranslatedHeader />
-
-        {children}
+          <ModalProvider>
+            <TranslatedHeader />
+            {children}
+          </ModalProvider>
         </LanguageProvider>
       </body>
     </html>

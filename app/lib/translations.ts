@@ -55,7 +55,11 @@ export const translations = {
     solutions: "Solutions",
     privacy: "Politique de confidentialité",
     terms: "Conditions d'utilisation",
-    linkedin: "LinkedIn"
+    linkedin: "LinkedIn",
+    
+    // Modal
+    contactForm: "Formulaire de contact",
+    close: "Fermer"
   },
   
   en: {
@@ -114,7 +118,11 @@ export const translations = {
     solutions: "Solutions",
     privacy: "Privacy policy",
     terms: "Terms of use",
-    linkedin: "LinkedIn"
+    linkedin: "LinkedIn",
+    
+    // Modal
+    contactForm: "Contact Form",
+    close: "Close"
   }
 };
 

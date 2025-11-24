@@ -3,11 +3,14 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useLanguage } from "./contexts/LanguageContext";
+import { useModal } from "./contexts/ModalContext";
 import { translations } from "./lib/translations";
+import ContactModal from "./components/ContactModal";
 
 export default function Home() {
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const { isModalOpen, openModal, closeModal } = useModal();
   const { language } = useLanguage();
   const t = translations[language];
   
@@ -55,7 +58,10 @@ export default function Home() {
                 {t.heroSubtitle}
               </p>
               
-              <button className="bg-coral text-dark text-button font-bold px-6 py-3 rounded-lg hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-2 w-full lg:w-auto">
+              <button 
+                onClick={openModal}
+                className="bg-coral text-dark text-button font-bold px-6 py-3 rounded-lg hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-2 w-full lg:w-auto cursor-pointer"
+              >
                 <style jsx>{`
                   @media (max-width: 1023px) {
                     button {
@@ -89,16 +95,24 @@ export default function Home() {
                   {t.exploreOffers}
                 </h2>
                 
-                <button className="w-full max-w-xl bg-white text-dark text-button font-bold py-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
+                <a 
+                  href={language === 'fr' 
+                    ? "https://www.royallepage.ca/fr/agent/quebec/varennes/samuel-laramee/60872/?fbclid=IwY2xjawORkaxleHRuA2FlbQIxMABicmlkETFuTllqMFVxVjJObEtZRG1Pc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHgcfaHk5oVFy8IoSWfZmc3WZsoo4sx2AqQNs3ocU3eX8GGOEE16x2CXsY5uW_aem_eJt5PqmN-hFVTpGH-pdnsA"
+                    : "https://www.royallepage.ca/en/agent/quebec/varennes/samuel-laramee/60872/?fbclid=IwY2xjawORkaxleHRuA2FlbQIxMABicmlkETFuTllqMFVxVjJObEtZRG1Pc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHgcfaHk5oVFy8IoSWfZmc3WZsoo4sx2AqQNs3ocU3eX8GGOEE16x2CXsY5uW_aem_eJt5PqmN-hFVTpGH-pdnsA"
+                  }
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full max-w-xl bg-white text-dark text-button font-bold py-3 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center"
+                >
                   <style jsx>{`
                     @media (max-width: 1023px) {
-                      button {
+                      a {
                         font-size: 12px !important;
                       }
                     }
                   `}</style>
                   Explorer
-                </button>
+                </a>
               </div>
             </div>
           </div>
@@ -263,7 +277,10 @@ export default function Home() {
                 
                 <div className="flex flex-col">
                   <div className="flex gap-4 flex-wrap items-start">
-                    <button className="bg-coral text-dark text-button font-bold px-6 py-3 rounded-lg hover:opacity-90 transition-opacity flex-shrink-0 inline-flex items-center justify-center gap-2 w-full lg:w-auto">
+                    <button 
+                      onClick={openModal}
+                      className="bg-coral text-dark text-button font-bold px-6 py-3 rounded-lg hover:opacity-90 transition-opacity flex-shrink-0 inline-flex items-center justify-center gap-2 w-full lg:w-auto cursor-pointer"
+                    >
                       <style jsx>{`
                         @media (max-width: 1023px) {
                           button {
@@ -274,21 +291,6 @@ export default function Home() {
                       <Image src="/icons/onVousConnecte.svg" alt="On vous connecte" width={16} height={16} />
                       {t.connectYou}
                     </button>
-                    <div className="flex flex-col items-center w-full lg:w-auto">
-                      <button className="bg-dark text-light text-button font-bold px-6 py-3 rounded-lg hover:opacity-90 transition-opacity w-full lg:w-auto flex items-center justify-center">
-                        <style jsx>{`
-                          @media (max-width: 1023px) {
-                            button {
-                              font-size: 12px !important;
-                            }
-                          }
-                        `}</style>
-                        {t.signUp}
-                      </button>
-                      <span className="text-dark/60 mt-2 block">
-                        • Professionnels •
-                      </span>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -318,18 +320,6 @@ export default function Home() {
                 <p className="text-dark">
                   {t.transactionText}
                 </p>
-                
-                <button className="bg-coral text-dark text-button font-bold px-6 py-3 rounded-lg hover:opacity-90 transition-opacity inline-flex items-center justify-center gap-2 w-full lg:w-auto">
-                  <style jsx>{`
-                    @media (max-width: 1023px) {
-                      button {
-                        font-size: 12px !important;
-                      }
-                    }
-                  `}</style>
-                  <Image src="/icons/suivreProcess.svg" alt="Suivre le processus" width={16} height={16} />
-                  {t.followProcess}
-                </button>
               </div>
             </div>
 
@@ -468,6 +458,9 @@ export default function Home() {
           <p className="text-white text-[14px]">Copyright © 2025 Saminc</p>
         </div>
       </div>
+
+      {/* Contact Modal */}
+      <ContactModal isOpen={isModalOpen} onClose={closeModal} />
     </main>
   );
 }
