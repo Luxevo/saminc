@@ -11,7 +11,7 @@ interface ContactModalProps {
 }
 
 export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
-  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [_scriptLoaded, setScriptLoaded] = useState(false);
   const { language } = useLanguage();
   const t = translations[language];
 
