@@ -770,28 +770,28 @@ export default function AdminPage() {
 
           {/* Desktop Table View */}
           <div className="hidden lg:flex lg:flex-col flex-1 overflow-auto">
-            <table className="w-full">
+            <table className="w-full table-fixed">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-dark font-bold text-sm">
+                  <th className="px-3 xl:px-4 py-3 text-left text-dark font-bold text-sm w-[22%]">
                     {t.email}
                   </th>
-                  <th className="px-6 py-3 text-left text-dark font-bold text-sm">
+                  <th className="px-3 xl:px-4 py-3 text-left text-dark font-bold text-sm w-[12%]">
                     {t.name}
                   </th>
-                  <th className="px-6 py-3 text-left text-dark font-bold text-sm">
+                  <th className="px-3 xl:px-4 py-3 text-left text-dark font-bold text-sm w-[12%]">
                     {t.currentRole}
                   </th>
-                  <th className="px-6 py-3 text-left text-dark font-bold text-sm">
+                  <th className="px-3 xl:px-4 py-3 text-left text-dark font-bold text-sm w-[15%]">
                     {t.changeRole}
                   </th>
-                  <th className="px-6 py-3 text-left text-dark font-bold text-sm">
+                  <th className="px-3 xl:px-4 py-3 text-left text-dark font-bold text-sm w-[10%]">
                     {t.status}
                   </th>
-                  <th className="px-6 py-3 text-left text-dark font-bold text-sm">
+                  <th className="hidden xl:table-cell px-3 xl:px-4 py-3 text-left text-dark font-bold text-sm w-[14%]">
                     {t.registrationDate}
                   </th>
-                  <th className="px-6 py-3 text-left text-dark font-bold text-sm">
+                  <th className="px-3 xl:px-4 py-3 text-left text-dark font-bold text-sm w-[15%] xl:w-[15%]">
                     {t.actions}
                   </th>
                 </tr>
@@ -799,22 +799,22 @@ export default function AdminPage() {
               <tbody className="divide-y divide-gray-200">
                 {filteredUsers.map((u) => (
                   <tr key={u.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
+                    <td className="px-3 xl:px-4 py-3">
+                      <div className="flex items-center gap-2">
                         <div
-                          className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs ${getAvatarColor(u.email)}`}
+                          className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-xs ${getAvatarColor(u.email)}`}
                         >
                           {getInitials(u.first_name, u.last_name, u.email)}
                         </div>
-                        <span className="text-dark text-sm">{u.email}</span>
+                        <span className="text-dark text-sm truncate">{u.email}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 text-dark text-sm">
+                    <td className="px-3 xl:px-4 py-3 text-dark text-sm truncate">
                       {u.first_name || "-"} {u.last_name || ""}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 xl:px-4 py-3">
                       <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
                           u.roles.name === "super_admin"
                             ? "bg-purple-100 text-purple-800"
                             : u.roles.name === "admin"
@@ -827,11 +827,11 @@ export default function AdminPage() {
                         {u.roles.name}
                       </span>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 xl:px-4 py-3">
                       <select
                         value={u.roles.name}
                         onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                        className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teal text-sm"
+                        className="w-full px-2 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:border-teal text-xs"
                         disabled={u.id === user.id}
                       >
                         {roles.map((role) => (
@@ -848,9 +848,9 @@ export default function AdminPage() {
                         ))}
                       </select>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 xl:px-4 py-3">
                       <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${
                           u.is_active
                             ? "bg-green-100 text-green-800"
                             : "bg-red-100 text-red-800"
@@ -859,14 +859,14 @@ export default function AdminPage() {
                         {u.is_active ? t.activeStatus : t.inactiveStatus}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-dark text-sm">
+                    <td className="hidden xl:table-cell px-3 xl:px-4 py-3 text-dark text-sm">
                       {new Date(u.created_at).toLocaleDateString(language === "fr" ? "fr-FR" : "en-US")}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 xl:px-4 py-3">
                       <button
                         onClick={() => handleDeleteUser(u.id, u.email)}
                         disabled={u.id === user.id}
-                        className="bg-red-500 text-white px-3 py-1 rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                        className="bg-red-500 text-white px-2 xl:px-3 py-1 rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs xl:text-sm whitespace-nowrap"
                         title={u.id === user.id ? t.cannotDeleteSelf : t.delete}
                       >
                         {t.delete}
