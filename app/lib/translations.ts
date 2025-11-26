@@ -6,8 +6,8 @@ export const translations = {
     contactUs: "Nous contacter",
     
     // Hero section
-    heroTitle: "Obtenez un service",
-    heroSubtitle: "Nous vous connectons avec les meilleurs professionnels pour vos besoins immobiliers",
+    heroTitle: "Obtenez un service\nà la hauteur de vos\nbesoins",
+    heroSubtitle: "Réalisez votre projet immobilier en toute sérénité, suivez son évolution, restez informé et optimisez votre transaction.",
     getStarted: "Démarrer un projet",
     exploreOffers: "Explorer les offres",
     
@@ -123,8 +123,8 @@ export const translations = {
     contactUs: "Contact us",
     
     // Hero section
-    heroTitle: "Get a service",
-    heroSubtitle: "We connect you with the best professionals for your real estate needs",
+    heroTitle: "Get a service\nthat meets your\nneeds",
+    heroSubtitle: "Realize your real estate project with peace of mind, follow its progress, stay informed and optimize your transaction.",
     getStarted: "Start a project",
     exploreOffers: "Explore offers",
     

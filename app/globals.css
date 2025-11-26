@@ -7,16 +7,16 @@
   --color-dark: #1E1E1E;
   --color-light: #F4F4F4;
   
-  /* Typographie personnalisée */
-  --font-size-h1: 48px;
-  --line-height-h1: 56.4px;
-  --font-size-h2: 32px;
-  --font-size-h3: 24px;
-  --font-size-h4: 18px;
-  --font-size-paragraph: 18px;
-  --font-size-menu: 16px;
-  --font-size-button: 14px;
-  --font-size-span: 12px;
+  /* Typographie personnalisée (réduite) */
+  --font-size-h1: 43.2px;
+  --line-height-h1: 51px;
+  --font-size-h2: 28.8px;
+  --font-size-h3: 22px;
+  --font-size-h4: 16.2px;
+  --font-size-paragraph: 16.2px;
+  --font-size-menu: 14.5px;
+  --font-size-button: 12.6px;
+  --font-size-span: 10.8px;
 }
 
 @layer base {

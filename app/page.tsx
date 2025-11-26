@@ -35,19 +35,19 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Left Column - Content */}
             <div className="space-y-6">
-                <h1 className="text-dark" style={{lineHeight: '56.4px'}}>
+                <h1 className="text-dark whitespace-pre-line" style={{lineHeight: '1.1'}}>
                   <style jsx>{`
                     @media (max-width: 1023px) {
                       h1 {
                         font-size: 32px !important;
-                        line-height: 1.2 !important;
+                        line-height: 1.1 !important;
                       }
                     }
                   `}</style>
                   {t.heroTitle}
                 </h1>
               
-              <p className="text-dark">
+              <p className="text-dark max-w-md">
                 <style jsx>{`
                   @media (max-width: 1023px) {
                     p {
@@ -64,9 +64,9 @@ export default function Home() {
               >
                 <style jsx>{`
                   @media (max-width: 1023px) {
-                    button {
-                      font-size: 12px !important;
-                    }
+                      button {
+                        font-size: 12px !important;
+                      }
                   }
                 `}</style>
                 <Image src="/icons/demarrerProjet.svg" alt="Démarrer un projet" width={16} height={16} />
@@ -264,7 +264,7 @@ export default function Home() {
                       }
                     }
                   `}</style>
-                  {t.need}<span className={`text-teal font-bold text-[22px] lg:text-[32px] inline-block transition-all duration-700 ease-out ${
+                  {t.need}<span className={`text-teal font-bold text-[22px] lg:text-[28px] inline-block transition-all duration-700 ease-out ${
                     isAnimating 
                       ? 'transform translate-y-8 opacity-0' 
                       : 'transform translate-y-0 opacity-100'
@@ -283,9 +283,9 @@ export default function Home() {
                     >
                       <style jsx>{`
                         @media (max-width: 1023px) {
-                          button {
-                            font-size: 12px !important;
-                          }
+                      button {
+                        font-size: 12px !important;
+                      }
                         }
                       `}</style>
                       <Image src="/icons/onVousConnecte.svg" alt="On vous connecte" width={16} height={16} />
@@ -358,7 +358,7 @@ export default function Home() {
                  <style jsx>{`
                    h3 {
                      font-weight: 600 !important;
-                     font-size: 18px !important;
+                     font-size: 16.2px !important;
                    }
                  `}</style>
                  {t.siteMap}
@@ -433,7 +433,7 @@ export default function Home() {
                 <style jsx>{`
                   h3 {
                     font-weight: 600 !important;
-                    font-size: 18px !important;
+                    font-size: 16.2px !important;
                   }
                 `}</style>
                 {t.contact}
