@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { supabase, type Role, type UserWithRole } from "../lib/supabase";
-import type { User } from "@supabase/supabase-js";
 import { useLanguage } from "../contexts/LanguageContext";
 import { translations } from "../lib/translations";
+import { useAdminData } from "./hooks/useAdminData";
+import AddUserForm from "./components/AddUserForm";
 
 // Helper function to get user initials
 function getInitials(firstName: string | null, lastName: string | null, email: string): string {
@@ -41,207 +41,44 @@ export default function AdminPage() {
   const { language } = useLanguage();
   const t = translations[language];
 
-  const [user, setUser] = useState<User | null>(null);
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [users, setUsers] = useState<UserWithRole[]>([]);
-  const [roles, setRoles] = useState<Role[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [authLoading, setAuthLoading] = useState(false);
+  // Use custom hook for all data management
+  const {
+    user,
+    userRole,
+    isAdmin,
+    loading,
+    authLoading,
+    users,
+    roles,
+    filteredUsers,
+    error,
+    successMessage,
+    searchQuery,
+    handleLogin,
+    handleLogout,
+    fetchData,
+    handleRoleChange,
+    handleCreateUser,
+    handleDeleteUser,
+    setSearchQuery,
+    setError,
+    setSuccessMessage,
+  } = useAdminData({
+    selectRoleError: t.selectRoleError,
+    errorCreatingUser: t.errorCreatingUser,
+    userCreatedSuccess: t.userCreatedSuccess,
+    serverError: t.serverError,
+    errorDeletingUser: t.errorDeletingUser,
+    userDeletedSuccess: t.userDeletedSuccess,
+  });
 
-  // New user form state
-  const [showNewUserForm, setShowNewUserForm] = useState(false);
-  const [newUserEmail, setNewUserEmail] = useState("");
-  const [newUserPassword, setNewUserPassword] = useState("");
-  const [newUserFirstName, setNewUserFirstName] = useState("");
-  const [newUserLastName, setNewUserLastName] = useState("");
-  const [newUserRoleId, setNewUserRoleId] = useState<number | null>(null);
-  const [newUserLoading, setNewUserLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  // Login form state
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
 
-  const checkAuth = useCallback(async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      setUser(session.user);
-      await fetchUserRole(session.user.id);
-      await fetchData();
-    }
-    setLoading(false);
-  }, []);
-
-  // Check auth status on mount
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
-
-  async function fetchUserRole(userId: string) {
-    const { data, error: _error } = await supabase
-      .from("users")
-      .select("roles(name)")
-      .eq("id", userId)
-      .single();
-
-    if (data?.roles) {
-      const roles = data.roles as unknown as { name: string };
-      setUserRole(roles.name);
-    }
-  }
-
-  async function fetchData() {
-    // Fetch users with their roles
-    const { data: usersData, error: usersError } = await supabase
-      .from("users")
-      .select(`
-        *,
-        roles (*)
-      `)
-      .order("created_at", { ascending: false });
-
-    if (usersError) {
-      setError(usersError.message);
-      return;
-    }
-
-    // Fetch all roles
-    const { data: rolesData, error: rolesError } = await supabase
-      .from("roles")
-      .select("*")
-      .order("id");
-
-    if (rolesError) {
-      setError(rolesError.message);
-      return;
-    }
-
-    setUsers(usersData || []);
-    setRoles(rolesData || []);
-  }
-
-  async function handleLogin(e: React.FormEvent) {
+  async function onLogin(e: React.FormEvent) {
     e.preventDefault();
-    setAuthLoading(true);
-    setError(null);
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error.message);
-      setAuthLoading(false);
-      return;
-    }
-
-    if (data.user) {
-      setUser(data.user);
-      await fetchUserRole(data.user.id);
-      await fetchData();
-    }
-    setAuthLoading(false);
-  }
-
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    setUser(null);
-    setUserRole(null);
-    setUsers([]);
-  }
-
-  async function handleRoleChange(userId: string, newRoleName: string) {
-    const { error } = await supabase.rpc("change_user_role", {
-      target_user_id: userId,
-      new_role_name: newRoleName,
-    });
-
-    if (error) {
-      setError(error.message);
-      return;
-    }
-
-    // Refresh data
-    await fetchData();
-  }
-
-  async function handleCreateUser(e: React.FormEvent) {
-    e.preventDefault();
-    setNewUserLoading(true);
-    setError(null);
-    setSuccessMessage(null);
-
-    if (!newUserRoleId) {
-      setError(t.selectRoleError);
-      setNewUserLoading(false);
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/admin/create-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: newUserEmail,
-          password: newUserPassword,
-          firstName: newUserFirstName,
-          lastName: newUserLastName,
-          roleId: newUserRoleId,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || t.errorCreatingUser);
-        setNewUserLoading(false);
-        return;
-      }
-
-      // Success - reset form and refresh data
-      setSuccessMessage(t.userCreatedSuccess);
-      setNewUserEmail("");
-      setNewUserPassword("");
-      setNewUserFirstName("");
-      setNewUserLastName("");
-      setNewUserRoleId(null);
-      setShowNewUserForm(false);
-      await fetchData();
-    } catch (err) {
-      setError(t.serverError);
-    }
-
-    setNewUserLoading(false);
-  }
-
-  async function handleDeleteUser(userId: string, userEmail: string) {
-    if (!confirm(`${t.confirmDelete} ${userEmail}?`)) {
-      return;
-    }
-
-    setError(null);
-    setSuccessMessage(null);
-
-    try {
-      const response = await fetch(`/api/admin/delete-user?userId=${userId}`, {
-        method: "DELETE",
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || t.errorDeletingUser);
-        return;
-      }
-
-      setSuccessMessage(t.userDeletedSuccess);
-      await fetchData();
-    } catch (err) {
-      setError(t.serverError);
-    }
+    await handleLogin(loginEmail, loginPassword);
   }
 
   if (loading) {
@@ -267,15 +104,15 @@ export default function AdminPage() {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={onLogin} className="space-y-4">
             <div>
               <label className="block text-dark mb-2" style={{ fontSize: "14px" }}>
                 {t.email}
               </label>
               <input
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
                 required
               />
@@ -286,8 +123,8 @@ export default function AdminPage() {
               </label>
               <input
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
                 required
               />
@@ -304,20 +141,6 @@ export default function AdminPage() {
       </main>
     );
   }
-
-  // Check if user has admin access
-  const isAdmin = userRole === "admin" || userRole === "super_admin";
-
-  // Filter users based on search query
-  const filteredUsers = users.filter((u) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      u.email.toLowerCase().includes(query) ||
-      (u.first_name?.toLowerCase() || "").includes(query) ||
-      (u.last_name?.toLowerCase() || "").includes(query) ||
-      u.roles.name.toLowerCase().includes(query)
-    );
-  });
 
   if (!isAdmin) {
     return (
@@ -482,151 +305,24 @@ export default function AdminPage() {
         )}
 
         {/* Add New User Section */}
-        <div className={`flex-shrink-0 rounded-lg shadow-md mb-2 sm:mb-4 ${showNewUserForm ? "bg-white" : "bg-gradient-to-r from-teal to-teal/80"}`}>
-          <div
-            className={`px-3 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 flex justify-between items-center cursor-pointer transition-colors ${
-              showNewUserForm ? "border-b border-gray-200 hover:bg-gray-50" : "hover:from-teal/90 hover:to-teal/70"
-            }`}
-            onClick={() => setShowNewUserForm(!showNewUserForm)}
-          >
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center ${showNewUserForm ? "bg-teal/10" : "bg-white/20"}`}>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className={showNewUserForm ? "text-teal" : "text-white"}
-                >
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <line x1="19" y1="8" x2="19" y2="14" />
-                  <line x1="16" y1="11" x2="22" y2="11" />
-                </svg>
-              </div>
-              <div>
-                <h2 className={`text-sm sm:text-lg md:text-xl font-bold ${showNewUserForm ? "text-dark" : "text-white"}`}>
-                  {t.addUser}
-                </h2>
-                {!showNewUserForm && (
-                  <p className="text-white/80 text-[10px] sm:text-xs md:text-sm hidden sm:block">{t.addUserSubtitle}</p>
-                )}
-              </div>
-            </div>
-            <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${showNewUserForm ? "bg-gray-100" : "bg-white/20"}`}>
-              <span className={`text-lg sm:text-xl font-bold ${showNewUserForm ? "text-dark" : "text-white"}`}>
-                {showNewUserForm ? "−" : "+"}
-              </span>
-            </div>
-          </div>
-
-          {showNewUserForm && (
-            <form onSubmit={handleCreateUser} className="p-3 sm:p-4 md:p-6 max-h-[50vh] overflow-y-auto">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
-                <div>
-                  <label className="block text-dark mb-2" style={{ fontSize: "14px" }}>
-                    {t.email} *
-                  </label>
-                  <input
-                    type="email"
-                    value={newUserEmail}
-                    onChange={(e) => setNewUserEmail(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-dark mb-2" style={{ fontSize: "14px" }}>
-                    {t.password} *
-                  </label>
-                  <input
-                    type="password"
-                    value={newUserPassword}
-                    onChange={(e) => setNewUserPassword(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
-                    required
-                    minLength={6}
-                  />
-                </div>
-                <div>
-                  <label className="block text-dark mb-2" style={{ fontSize: "14px" }}>
-                    {t.firstName}
-                  </label>
-                  <input
-                    type="text"
-                    value={newUserFirstName}
-                    onChange={(e) => setNewUserFirstName(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
-                  />
-                </div>
-                <div>
-                  <label className="block text-dark mb-2" style={{ fontSize: "14px" }}>
-                    {t.lastName}
-                  </label>
-                  <input
-                    type="text"
-                    value={newUserLastName}
-                    onChange={(e) => setNewUserLastName(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
-                  />
-                </div>
-                <div className="md:col-span-2">
-                  <label className="block text-dark mb-2" style={{ fontSize: "14px" }}>
-                    {t.role} *
-                  </label>
-                  <select
-                    value={newUserRoleId || ""}
-                    onChange={(e) => setNewUserRoleId(Number(e.target.value))}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-teal"
-                    required
-                  >
-                    <option value="">{t.selectRole}</option>
-                    {roles.map((role) => (
-                      <option
-                        key={role.id}
-                        value={role.id}
-                        disabled={
-                          userRole !== "super_admin" &&
-                          (role.name === "super_admin" || role.name === "admin")
-                        }
-                      >
-                        {role.name} - {role.description}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
-                <button
-                  type="submit"
-                  disabled={newUserLoading}
-                  className="bg-teal text-white font-bold px-6 py-3 rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 w-full sm:w-auto text-sm sm:text-base"
-                >
-                  {newUserLoading ? t.creating : t.createUser}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowNewUserForm(false);
-                    setNewUserEmail("");
-                    setNewUserPassword("");
-                    setNewUserFirstName("");
-                    setNewUserLastName("");
-                    setNewUserRoleId(null);
-                  }}
-                  className="bg-gray-300 text-dark font-bold px-6 py-3 rounded-lg hover:opacity-90 transition-opacity w-full sm:w-auto text-sm sm:text-base"
-                >
-                  {t.cancel}
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
+        <AddUserForm
+          roles={roles}
+          userRole={userRole}
+          onCreateUser={handleCreateUser}
+          translations={{
+            addUser: t.addUser,
+            addUserSubtitle: t.addUserSubtitle,
+            email: t.email,
+            password: t.password,
+            firstName: t.firstName,
+            lastName: t.lastName,
+            role: t.role,
+            selectRole: t.selectRole,
+            createUser: t.createUser,
+            creating: t.creating,
+            cancel: t.cancel,
+          }}
+        />
 
         {/* Users Section */}
         <div className="flex-1 min-h-0 bg-white rounded-lg shadow-md flex flex-col overflow-hidden">
@@ -755,7 +451,7 @@ export default function AdminPage() {
                     ))}
                   </select>
                   <button
-                    onClick={() => handleDeleteUser(u.id, u.email)}
+                    onClick={() => handleDeleteUser(u.id, u.email, t.confirmDelete)}
                     disabled={u.id === user.id}
                     className="flex-shrink-0 bg-red-500 text-white px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs sm:text-sm"
                     title={u.id === user.id ? t.cannotDeleteSelf : t.delete}
@@ -864,7 +560,7 @@ export default function AdminPage() {
                     </td>
                     <td className="px-3 xl:px-4 py-3">
                       <button
-                        onClick={() => handleDeleteUser(u.id, u.email)}
+                        onClick={() => handleDeleteUser(u.id, u.email, t.confirmDelete)}
                         disabled={u.id === user.id}
                         className="bg-red-500 text-white px-2 xl:px-3 py-1 rounded-lg hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-xs xl:text-sm whitespace-nowrap"
                         title={u.id === user.id ? t.cannotDeleteSelf : t.delete}
